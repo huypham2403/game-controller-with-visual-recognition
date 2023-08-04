@@ -20,7 +20,7 @@ Mô tả Project: Chương trình điều khiển trò chơi thông qua nhận d
   
   3.2.1/ Sử dụng tf.keras.preprocessing.image_dataset_from_directory để thực hiện việc load bộ dataset đã được chụp (không cần phải chia các tập train, test và validation).
  
-  <pre> 
+<pre> 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
     data_dir,
     seed=123,
@@ -66,8 +66,21 @@ def process_all(self, rootdir: str):
            y.append(label)</pre>
   
   3.2.3/ Vì label có dạng String, sử dụng LabelEncoder() và to_categorical() trên tập label.
+    <pre>le = LabelEncoder()
+    y_encode = le.fit_transform(y)
+    y_encode = to_categorical(y_encode, num_classes)</pre>
   
   3.2.4/ Slicing tập train và label, sau cùng gộp lại bằng tf.data.Dataset.from_tensor_slices.
+<pre> X_train, X_test, y_train, y_test = train_test_split(X, y_encode, test_size=0.2, random_state=42)
+ X_val, X_test, y_val, y_test=train_test_split(X_test, y_test, test_size=0.5, random_state=42)
+ 
+ X_train = np.reshape(X_train, (len(X_train), 1, 30))
+ X_val = np.reshape(X_val, (len(X_val), 1, 30))
+ X_test = np.reshape(X_test, (len(X_test), 1, 30))
+ train_ds = tf.data.Dataset.from_tensor_slices((X_train, y_train)).batch(batch_size_model)
+ val_ds = tf.data.Dataset.from_tensor_slices((X_val, y_val)).batch(batch_size_model)
+ test_ds = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(batch_size_model)
+ input_shape=((1, X_train.shape[1],))</pre>
   
   3.2.5/ Tiến hành train bằng mô hình LSTM trên các tập được gộp bằng tf.data.Dataset.from_tensor_slices.
  
