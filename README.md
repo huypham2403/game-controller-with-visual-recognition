@@ -19,6 +19,11 @@ Mô tả Project: Chương trình điều khiển trò chơi thông qua nhận d
   File sử dụng : trainingdata.ipynb
   
   3.2.1/ Sử dụng tf.keras.preprocessing.image_dataset_from_directory để thực hiện việc load bộ dataset đã được chụp (không cần phải chia các tập train, test và validation).
+  <code> train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    data_dir,
+    seed=123,
+    image_size=(img_height, img_width),
+    batch_size=batch_size_model) </code>
   
   3.2.1/* Có thể thêm data augmentation để tăng thêm độ đa dạng (Optional).
   
