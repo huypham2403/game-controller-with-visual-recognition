@@ -18,7 +18,7 @@ Mô tả Project: Chương trình điều khiển trò chơi thông qua nhận d
 
   File sử dụng : trainingdata.ipynb
   
-  3.2.1/ Sử dụng tf.keras.preprocessing.image_dataset_from_directory để thực hiện việc load bộ dataset đã được chụp (không cần phải chia các tập train, test và validation).
+  3.2.1/ Sử dụng <code>tf.keras.preprocessing.image_dataset_from_directory</code> để thực hiện việc load bộ dataset đã được chụp (không cần phải chia các tập train, test và validation).
  
 <pre> 
 train_ds = tf.keras.preprocessing.image_dataset_from_directory(
@@ -65,12 +65,12 @@ def process_all(self, rootdir: str):
            X.append(landmarks[np.r_[0:3, 15:18, 24:27, 27:30, 36:39, 39:42, 48:51, 51:54, 57:60, 60:63]]) 
            y.append(label)</pre>
   
-  3.2.3/ Vì label có dạng String, sử dụng LabelEncoder() và to_categorical() trên tập label.
+  3.2.3/ Vì label có dạng String, sử dụng <code>LabelEncoder()</code> và <code>to_categorical()</code> trên tập label.
     <pre>le = LabelEncoder()
     y_encode = le.fit_transform(y)
     y_encode = to_categorical(y_encode, num_classes)</pre>
   
-  3.2.4/ Slicing tập train và label, sau cùng gộp lại bằng tf.data.Dataset.from_tensor_slices.
+  3.2.4/ Slicing tập train và label, sau cùng gộp lại bằng <code>tf.data.Dataset.from_tensor_slices</code>.
 <pre> X_train, X_test, y_train, y_test = train_test_split(X, y_encode, test_size=0.2, random_state=42)
  X_val, X_test, y_val, y_test=train_test_split(X_test, y_test, test_size=0.5, random_state=42)
  
@@ -82,8 +82,8 @@ def process_all(self, rootdir: str):
  test_ds = tf.data.Dataset.from_tensor_slices((X_test, y_test)).batch(batch_size_model)
  input_shape=((1, X_train.shape[1],))</pre>
   
-  3.2.5/ Tiến hành train bằng mô hình LSTM trên các tập được gộp bằng tf.data.Dataset.from_tensor_slices.
- <pre> from tensorflow import keras
+  3.2.5/ Tiến hành train bằng mô hình LSTM trên các tập được gộp bằng <code>tf.data.Dataset.from_tensor_slices. </code>
+ <pre>
 callback = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
 model = Sequential()
 model.add(layers.LSTM(512, return_sequences=True, input_shape=(1,30)))
