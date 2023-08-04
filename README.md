@@ -83,4 +83,16 @@ def process_all(self, rootdir: str):
  input_shape=((1, X_train.shape[1],))</pre>
   
   3.2.5/ Tiến hành train bằng mô hình LSTM trên các tập được gộp bằng tf.data.Dataset.from_tensor_slices.
- 
+ <pre> from tensorflow import keras
+callback = keras.callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
+model = Sequential()
+model.add(layers.LSTM(512, return_sequences=True, input_shape=(1,30)))
+model.add(layers.LSTM(512, return_sequences=True))
+model.add(layers.LSTM(256, return_sequences=True))
+
+model.add(layers.LSTM(256))
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(512, activation='relu'))
+model.add(layers.Dense(num_classes, activation='softmax'))
+model.compile(loss='CategoricalCrossentropy', optimizer='adam', metrics=["accuracy"]) </pre>
