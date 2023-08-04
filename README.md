@@ -20,55 +20,55 @@ Mô tả Project: Chương trình điều khiển trò chơi thông qua nhận d
   
   3.2.1/ Sử dụng tf.keras.preprocessing.image_dataset_from_directory để thực hiện việc load bộ dataset đã được chụp (không cần phải chia các tập train, test và validation).
  
-  <code> train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+  <code> 
+  train_ds = tf.keras.preprocessing.image_dataset_from_directory(
     data_dir,
     seed=123,
     image_size=(img_height, img_width),
-    batch_size=batch_size_model) </code>
+    batch_size=batch_size_model) 
+  </code>
   
   3.2.1/* Có thể thêm data augmentation để tăng thêm độ đa dạng (Optional).
   
-  <code> from tensorflow.keras.layers import  RandomBrightness, RandomFlip,  RandomRotation,  RandomZoom
-from tensorflow.keras import layers, Sequential
+  <code>
 data_augmentation = Sequential([
   RandomFlip("horizontal"),
   RandomRotation(0.1),
   RandomZoom(0.1),
   RandomBrightness(0.2)]) 
-
-train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))</code>
+train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))
+  </code>
   
   3.2.2/ Trích xuất 21 landmarks từ bàn tay, sau đó ta sẽ slicing và lấy các landmarks cần thiết, label của mỗi bàn tay là tên của folder ảnh đang được trích xuất.
 
-  <code>
-    def process(self, path: str):
-        img = self.__read_img(path)
-        results = super().process(img)
-        if not results.multi_hand_world_landmarks:
-            return None
-        for hand_world_landmarks in results.multi_hand_world_landmarks:
-            hand = (
-                np.array(
-                    [[res.x, res.y, res.z] for res in hand_world_landmarks.landmark]
-                )
-                .transpose()
-                .flatten()
-            )
-        return hand
-    def process_all(self, rootdir: str):
-        labels = os.listdir(rootdir)
-        labels.sort()
-        X = list()
-        y = list()
-
-        for label in labels:
-            list_img_paths = [os.path.join(rootdir, label, img) for img in os.listdir(os.path.join(rootdir, label))]
-            for path in list_img_paths:
-                landmarks = self.process(path)
-                if landmarks is None:
-                    continue
-                X.append(landmarks[np.r_[0:3, 15:18, 24:27, 27:30, 36:39, 39:42, 48:51, 51:54, 57:60, 60:63]]) 
-                y.append(label)</code>
+<code>
+def process(self, path: str):
+   img = self.__read_img(path)
+   results = super().process(img)
+   if not results.multi_hand_world_landmarks:
+       return None
+   for hand_world_landmarks in results.multi_hand_world_landmarks:
+       hand = (
+           np.array(
+               [[res.x, res.y, res.z] for res in hand_world_landmarks.landmark]
+           )
+           .transpose()
+           .flatten()
+       )
+   return hand
+def process_all(self, rootdir: str):
+   labels = os.listdir(rootdir)
+   labels.sort()
+   X = list()
+   y = list()
+   for label in labels:
+       list_img_paths = [os.path.join(rootdir, label, img) for img in os.listdir(os.path.join(rootdir, label))]
+       for path in list_img_paths:
+           landmarks = self.process(path)
+           if landmarks is None:
+               continue
+           X.append(landmarks[np.r_[0:3, 15:18, 24:27, 27:30, 36:39, 39:42, 48:51, 51:54, 57:60, 60:63]]) 
+           y.append(label)</code>
   
   3.2.3/ Vì label có dạng String, sử dụng LabelEncoder() và to_categorical() trên tập label.
   
