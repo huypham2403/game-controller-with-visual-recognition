@@ -21,12 +21,11 @@ Mô tả Project: Chương trình điều khiển trò chơi thông qua nhận d
   3.2.1/ Sử dụng tf.keras.preprocessing.image_dataset_from_directory để thực hiện việc load bộ dataset đã được chụp (không cần phải chia các tập train, test và validation).
  
   <code> 
-  train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(
     data_dir,
     seed=123,
     image_size=(img_height, img_width),
-    batch_size=batch_size_model) 
-  </code>
+    batch_size=batch_size_model)</code>
   
   3.2.1/* Có thể thêm data augmentation để tăng thêm độ đa dạng (Optional).
   
@@ -36,8 +35,8 @@ data_augmentation = Sequential([
   RandomRotation(0.1),
   RandomZoom(0.1),
   RandomBrightness(0.2)]) 
-train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y))
-  </code>
+train_ds = train_ds.map(lambda x, y: (data_augmentation(x), y)) </code>
+ 
   
   3.2.2/ Trích xuất 21 landmarks từ bàn tay, sau đó ta sẽ slicing và lấy các landmarks cần thiết, label của mỗi bàn tay là tên của folder ảnh đang được trích xuất.
 
@@ -49,12 +48,9 @@ def process(self, path: str):
        return None
    for hand_world_landmarks in results.multi_hand_world_landmarks:
        hand = (
-           np.array(
-               [[res.x, res.y, res.z] for res in hand_world_landmarks.landmark]
-           )
+           np.array([[res.x, res.y, res.z] for res in hand_world_landmarks.landmark])
            .transpose()
-           .flatten()
-       )
+           .flatten())
    return hand
 def process_all(self, rootdir: str):
    labels = os.listdir(rootdir)
